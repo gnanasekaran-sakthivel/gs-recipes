@@ -13,7 +13,9 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "seed": "cd server && npm run seed",
-    "start": "npm run client:build && npm run server",
+    "start": "concurrently \"npm run server:start\" \"wait-on tcp:3001 && npm run client:start\"",
+    "server:start": "cd server && npm run start",
+    "client:start": "cd client && npm run start",
     "server": "cd server && npm start",
     "client": "cd client && npm start"
   },
