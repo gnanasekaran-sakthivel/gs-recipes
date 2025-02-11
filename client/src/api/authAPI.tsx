@@ -2,7 +2,7 @@ import { UserLogin } from "../interfaces/UserLogin";
 
 const login = async (userInfo: UserLogin) => {
   try {
-    console.log("Attempting login with:", { username: userInfo.username });
+    console.log(`Attempting login for username ${userInfo.username}`);
 
     const response = await fetch("/auth/login", {
       method: "POST",
@@ -12,15 +12,23 @@ const login = async (userInfo: UserLogin) => {
       body: JSON.stringify(userInfo),
     });
 
-    console.log("Login response status:", response.status);
+    console.log(`Login response status: ${response.status}`);
 
     if (!response.ok) {
       let errorMessage;
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || "Login filed";
-      } catch {
-        errorMessage = `Login failed with status: ${response.status}`;
+
+      if (response.status === 401) {
+        errorMessage = "Unauthorized: Invalid credentials.";
+      } else if (response.status === 404) {
+        errorMessage =
+          "User not found. Check the username or register for a new user.";
+      } else {
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || "Login failed";
+        } catch {
+          errorMessage = `Login failed with status: ${response.status}`;
+        }
       }
       throw new Error(errorMessage);
     }

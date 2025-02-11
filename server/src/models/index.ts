@@ -5,16 +5,19 @@ dotenv.config();
 import { Sequelize, Options } from "sequelize";
 import { UserGenerator } from "./user.js";
 
+const devMode = process.env.DEV_MODE || "N";
+
 const sequelize_options: Options = {
   host: "localhost",
   dialect: "postgres",
   dialectOptions: {
     decimalNumbers: true,
-    /*
-    ssl: {
-      require: true,
-      rejectUnauthorized: false, // Important for self-signed certificates
-    },*/
+    ...(devMode !== "Y" && {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false, // Important for self-signed certificates
+      },
+    }),
   },
 };
 

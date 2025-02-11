@@ -1,7 +1,8 @@
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import Auth from "../utils/auth.js";
 import "../index.css";
+import "../styles/general.css";
 import { login } from "../api/authAPI";
 
 interface LoginData {
@@ -14,6 +15,13 @@ const Login = () => {
     username: "",
     password: "",
   });
+
+  // This is inserted to capture login error...
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setErrorMessage(""); // Reset error message on component mount
+  }, []);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -35,9 +43,12 @@ const Login = () => {
 
     try {
       const data = await login(loginData);
+
+      console.log(`Login response... `);
       Auth.login(data.token, loginData.username);
     } catch (err) {
-      console.error("Failed to login", err);
+      console.error(`Failed to login ${err}`);
+      setErrorMessage(`${err}`); // Set error message
     }
   };
 
@@ -62,9 +73,12 @@ const Login = () => {
         <button className="submit" type="submit">
           Login
         </button>
+
+        {/* Conditionally render error message if it exists */}
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
       </form>
       <p className="register">
-        Don't have an account? <Link to="/register"> Register here</Link>
+        Don't have an account? <Link to="/register">Register here</Link>
       </p>
     </div>
   );
