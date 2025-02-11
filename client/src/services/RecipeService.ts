@@ -7,7 +7,7 @@ const RAPIDAPI_KEY = "your_rapidapi_key_here";
 const COCKTAIL_API_URL = "https://the-cocktail-db.p.rapidapi.com";
 const DESSERT_API_URL = "your_dessert_api_endpoint";
 
-const BYPASS_SERVER = import.meta.env.VITE_BYPASS_SERVER;
+const BYPASS_SERVER = import.meta.env.VITE_BYPASS_SERVER ?? "N";
 
 // RecipeService.ts
 export const getRecipeDetails = async (recipeId: string): Promise<Recipe> => {
